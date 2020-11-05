@@ -11,6 +11,7 @@ class Arreglo
     size_t tam;
     size_t cont;
     const static size_t MAX = 5;
+    void expandir();
 
     public:
         Arreglo();
@@ -21,15 +22,21 @@ class Arreglo
         void eliminar_inicio();
         void eliminar_final();
         void eliminar(size_t index);
+
+        T* buscar(const T &s);
+        Arreglo<T*> buscar_todos(const T &s);
         size_t size();
 
-        string operator[](size_t p)
+        T operator[](size_t p)
         {
             return arreglo[p];
         }
+        friend Arreglo<T>& operator<< (Arreglo<T> &a, const T& s)
+        {
+            a.insertar_final(s);
 
-    private:
-        void expandir();
+            return a;
+        }
 };
 
 template <class T>
@@ -115,6 +122,7 @@ void Arreglo<T>::eliminar_final()
 
 template <class T>
 void Arreglo<T>::eliminar(size_t index)
+
 {
     if (cont == 0){
         cout << "No hay ningún elemento para eliminar" << endl;
@@ -135,6 +143,27 @@ void Arreglo<T>::eliminar(size_t index)
 
 }
 template <class T>
+T* Arreglo<T>::buscar(const T& s)
+{
+    for(size_t i=0;i<cont;i++){
+        if(s==arreglo[i]){
+            return &arreglo[i];
+        }
+    }
+    return nullptr;
+}
+template <class T>
+Arreglo<T*> Arreglo<T>::buscar_todos(const T& s)  
+{
+    Arreglo<T*> ptrs;
+    for(size_t i=0;i<cont;i++){
+        if(s==arreglo[i]){
+            ptrs.insertar_final(&arreglo[i]);
+        }
+    }
+    return ptrs;
+}
+template <class T>
 size_t Arreglo<T>::size()
 {
     return cont;
@@ -142,7 +171,7 @@ size_t Arreglo<T>::size()
 template <class T>
 void Arreglo<T>::expandir()
 {
-    string *nuevo = new T[tam+MAX];
+    T *nuevo = new T[tam+MAX];
 
     for(size_t i=0; i<cont;i++){
         nuevo[i] = arreglo[i];
